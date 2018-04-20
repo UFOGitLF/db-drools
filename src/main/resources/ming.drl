@@ -1,0 +1,38 @@
+package com.fly;
+
+import com.fly.entity.XiaoMing
+
+/**
+* 1元钱一瓶汽水，喝完后两个空瓶换一瓶汽水，问：小明有20元钱，最多可以喝到几瓶汽水？
+**/
+
+rule "rule-money"
+    salience 3
+    when
+        $m:XiaoMing(money > 0)
+    then
+        System.out.println("有钱即可喝水，钱：" + $m.getMoney());
+        $m.setDrink($m.getDrink() + 1);
+        $m.setBottle($m.getBottle() + 1);
+        $m.setMoney($m.getMoney() - 1);
+        update($m)
+end
+
+rule "rule-bottle"
+    salience 2
+    when
+        $m:XiaoMing(bottle >= 2)
+    then
+        System.out.println("有瓶子就换钱，瓶子：" + $m.getBottle());
+        $m.setBottle($m.getBottle() - 2);
+        $m.setMoney($m.getMoney() + 1);
+        update($m)
+    end
+
+rule "print"
+    salience 1
+    when
+        $m:XiaoMing();
+    then
+        System.out.println("总共喝掉："+$m.getDrink());
+    end
